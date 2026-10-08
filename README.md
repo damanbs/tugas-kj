@@ -261,6 +261,70 @@ Diketahui beberapa alamat IP berikut:
 
 Buatlah visualisasi sinyal harmonisasi dari deret **1, 3, 5, 7, 9,** menggunakan **Python**.
 
+<details>
+<summary><b>Klik untuk melihat kode</b></summary>
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+f0 = 1.0  
+fs = 1000  
+durasi = 2.0  
+t = np.linspace(0, durasi, int(fs * durasi), endpoint=False)
+
+harmonik_list = [1, 3, 5, 7, 9]
+
+fig, axes = plt.subplots(
+    nrows=len(harmonik_list) + 1,
+    ncols=1,
+    figsize=(10, 10),
+    sharex=True,
+    sharey=True,
+)
+
+gelombang_superposisi = np.zeros_like(t)
+
+for idx, n in enumerate(harmonik_list):
+    amplitudo = 1.0 / n
+    gelombang_n = amplitudo * np.sin(2 * np.pi * n * f0 * t)
+
+    gelombang_superposisi += gelombang_n
+
+    axes[idx].plot(
+        t,
+        gelombang_n,
+        label=f"Harmonik ke-{n} (f = {n*f0:.1f} Hz, A = 1/{n})",
+        color="royalblue",
+        linewidth=1.2,
+    )
+    axes[idx].set_ylabel(f"H-{n}", fontsize=9)
+    axes[idx].grid(True, linestyle="--", alpha=0.6)
+    axes[idx].legend(loc="upper right", fontsize=8)
+
+axes[-1].plot(
+    t,
+    gelombang_superposisi,
+    label="Superposisi (Hasil Harmonisasi: Gelombang Kotak)",
+    color="crimson",
+    linewidth=1.8,
+)
+axes[-1].set_ylabel("Total", fontsize=9)
+axes[-1].set_xlabel("Waktu (detik)", fontsize=10)
+axes[-1].grid(True, linestyle="--", alpha=0.6)
+axes[-1].legend(loc="upper right", fontsize=8)
+
+plt.suptitle(
+    "Visualisasi Harmonisasi Gelombang Sinus",
+    fontsize=13,
+    fontweight="bold",
+)
+plt.tight_layout()
+plt.show()
+```
+
+</details>
+
 ---
 
 
@@ -291,17 +355,17 @@ Lakukan pembagian subnet (*subnetting*) untuk setiap jaringan berikut:
 ### Bagian 1: `192.168.1.0/24` dibagi menjadi 4 Subnet
 
 #### Langkah Perhitungan:
-1. **Menentukan bit subnet yang dipinjam ($s$):**
-   $$2^s \ge 4 \implies s = 2 	ext{ bit}$$
+1. **Menentukan bit subnet yang dipinjam (s):**
+   2^s >= 4 -> s = 2 bit (Prefix baru: 24 + 2 = /26)
 2. **Ukuran blok subnet:**
-   $$	ext{Interval Blok} = 256 - 192 = 64 	ext{ IP}$$
+   Interval Blok = 256 - 192 = 64 IP
 3. **Jumlah host per subnet:**
-   $$	ext{Jumlah Host Usable} = 2^{(32 - 26)} - 2 = 2^6 - 2 = 64 - 2 = 62 	ext{ host}$$
+   Jumlah Host Usable = 2^(32 - 26) - 2 = 2^6 - 2 = 64 - 2 = 62 host
 
 #### Hasil Pembagian Subnet:
 
-| Subnet  | IP Network | Subnet Mask (Prefix) | Host Pertama | Host Terakhir | Broadcast | Jumlah Host Usable |
-|:----------:|:-----------|:---------------------|:-------------|:--------------|:----------|:------------------:|
+| Subnet | IP Network | Subnet Mask (Prefix) | Host Pertama | Host Terakhir | Broadcast | Jumlah Host Usable |
+|:------:|:-----------|:---------------------|:-------------|:--------------|:----------|:------------------:|
 | 1 | `192.168.1.0/26` | `255.255.255.192` (`/26`) | `192.168.1.1` | `192.168.1.62` | `192.168.1.63` | 62 |
 | 2 | `192.168.1.64/26` | `255.255.255.192` (`/26`) | `192.168.1.65` | `192.168.1.126` | `192.168.1.127` | 62 |
 | 3 | `192.168.1.128/26` | `255.255.255.192` (`/26`) | `192.168.1.129` | `192.168.1.190` | `192.168.1.191` | 62 |
@@ -312,13 +376,13 @@ Lakukan pembagian subnet (*subnetting*) untuk setiap jaringan berikut:
 ### Bagian 2: `132.10.0.0/16` dibagi menjadi 10 Subnet
 
 #### Langkah Perhitungan:
-1. **Menentukan bit subnet yang dipinjam ($s$):**
-   $$2^s \ge 10 \implies s = 4 	ext{ bit} \quad (2^4 = 16 	ext{ subnet tersedia})$$
+1. **Menentukan bit subnet yang dipinjam (s):**
+   2^s >= 10 -> s = 4 bit (2^4 = 16 subnet tersedia, Prefix baru: 16 + 4 = /20)
 2. **Ukuran blok subnet:**
-   $$	ext{Interval Blok Oktet 3} = 256 - 240 = 16$$
-   Setiap subnet mencakup 16 kelipatan pada oktet ketiga (total $16 	imes 256 = 4096$ IP).
+   Interval Blok Oktet 3 = 256 - 240 = 16
+   Setiap subnet mencakup 16 kelipatan pada oktet ketiga (total 16 x 256 = 4.096 IP).
 3. **Jumlah host per subnet:**
-   $$	ext{Jumlah Host Usable} = 2^{(32 - 20)} - 2 = 2^{12} - 2 = 4096 - 2 = 4094 	ext{ host}$$
+   Jumlah Host Usable = 2^(32 - 20) - 2 = 2^12 - 2 = 4096 - 2 = 4.094 host
 
 #### Hasil Pembagian 10 Subnet (dari 16 subnet yang tersedia):
 
@@ -342,13 +406,13 @@ Lakukan pembagian subnet (*subnetting*) untuk setiap jaringan berikut:
 ### Bagian 3: `17.8.0.0/16` dibagi menjadi 4 Subnet
 
 #### Langkah Perhitungan:
-1. **Menentukan bit subnet yang dipinjam ($s$):**
-   $$2^s \ge 4 \implies s = 2 	ext{ bit}$$
+1. **Menentukan bit subnet yang dipinjam (s):**
+   2^s >= 4 -> s = 2 bit (Prefix baru: 16 + 2 = /18)
 2. **Ukuran blok subnet:**
-   $$	ext{Interval Blok Oktet 3} = 256 - 192 = 64$$
-   Setiap subnet bertambah 64 pada oktet ketiga (total $64 	imes 256 = 16384$ IP).
+   Interval Blok Oktet 3 = 256 - 192 = 64
+   Setiap subnet bertambah 64 pada oktet ketiga (total 64 x 256 = 16.384 IP).
 3. **Jumlah host per subnet:**
-   $$	ext{Jumlah Host Usable} = 2^{(32 - 18)} - 2 = 2^{14} - 2 = 16384 - 2 = 16382 	ext{ host}$$
+   Jumlah Host Usable = 2^(32 - 18) - 2 = 2^14 - 2 = 16384 - 2 = 16.382 host
 
 #### Hasil Pembagian Subnet:
 
@@ -367,19 +431,13 @@ Lakukan pembagian subnet (*subnetting*) untuk setiap jaringan berikut:
 1. **Analisis Blok Awal (`/12`):**
    - Subnet Mask awal: `255.240.0.0`
    - Rentang blok awal: `8.32.0.0` sampai `8.47.255.255` (ukuran blok = 16 pada oktet ke-2).
-2. **Menentukan bit subnet yang dipinjam ($s$):**
-   $$2^s \ge 6 \implies s = 3 	ext{ bit} \quad (2^3 = 8 	ext{ subnet tersedia})$$
-3. **Prefix baru:**
-   $$	ext{Prefix Baru} = 12 + 3 = /15$$
-4. **Subnet Mask baru:**
-   - 15 bit pertama bernilai 1.
-   - Biner oktet ke-2: `11111110` = 254
-   - Subnet Mask: `255.254.0.0`
-5. **Ukuran blok subnet:**
-   $$	ext{Interval Blok Oktet 2} = 256 - 254 = 2$$
-   Setiap subnet bertambah sebesar 2 pada oktet ke-2 (total $2 	imes 256 	imes 256 = 131072$ IP).
-6. **Jumlah host per subnet:**
-   $$	ext{Jumlah Host Usable} = 2^{(32 - 15)} - 2 = 2^{17} - 2 = 131072 - 2 = 131070 	ext{ host}$$
+2. **Menentukan bit subnet yang dipinjam (s):**
+   2^s >= 6 -> s = 3 bit (2^3 = 8 subnet tersedia)
+3. **Ukuran blok subnet:**
+   Interval Blok Oktet 2 = 256 - 254 = 2
+   Setiap subnet bertambah sebesar 2 pada oktet ke-2 (total 2 x 256 x 256 = 131.072 IP).
+4. **Jumlah host per subnet:**
+   Jumlah Host Usable = 2^(32 - 15) - 2 = 2^17 - 2 = 131072 - 2 = 131.070 host
 
 #### Hasil Pembagian 6 Subnet (dari 8 subnet yang tersedia):
 
@@ -391,7 +449,6 @@ Lakukan pembagian subnet (*subnetting*) untuk setiap jaringan berikut:
 | 4 | `8.38.0.0/15` | `255.254.0.0` (`/15`) | `8.38.0.1` | `8.39.255.254` | `8.39.255.255` | 131070 |
 | 5 | `8.40.0.0/15` | `255.254.0.0` (`/15`) | `8.40.0.1` | `8.41.255.254` | `8.41.255.255` | 131070 |
 | 6 | `8.42.0.0/15` | `255.254.0.0` (`/15`) | `8.42.0.1` | `8.43.255.254` | `8.43.255.255` | 131070 |
-
 
 ---
 
@@ -422,19 +479,19 @@ Lakukan analisis terhadap cara kerja **Traceroute** serta mekanisme **TTL (Time 
 - **Fungsi Utama TTL:**
   1. **Mencegah Infinite Routing Loop:** Jika terjadi kesalahan pada tabel routing router-router internet yang menyebabkan paket berputar bolak-balik (*looping*), paket tidak akan berputar selamanya yang dapat membebani kapasitas jaringan.
   2. **Mekanisme Dekrementasi:** Setiap kali sebuah router menerima dan meneruskan (*forward*) paket IP ke hop berikutnya, router wajib mengurangi nilai TTL sebesar 1:
-     $$	ext{TTL}_{	ext{baru}} = 	ext{TTL}_{	ext{lama}} - 1$$
-  3. **Pembuangan Paket (*Packet Drop*):** Jika router menerima paket dengan nilai $	ext{TTL} = 1$, saat dikurangi menjadi $0$, router tidak boleh meneruskan paket tersebut. Router akan **membuang (*drop*)** paket tersebut dan mengirimkan laporan kesalahan ke pengirim asli.
+     TTL_baru = TTL_lama - 1
+  3. **Pembuangan Paket (*Packet Drop*):** Jika router menerima paket dengan nilai TTL = 1, saat dikurangi menjadi 0, router tidak boleh meneruskan paket tersebut. Router akan **membuang (*drop*)** paket tersebut dan mengirimkan laporan kesalahan ke pengirim asli.
 
 #### 3. Bagaimana Traceroute Memanfaatkan TTL untuk Memetakan Jalur
 Traceroute tidak dapat langsung meminta seluruh router perantara melaporkan diri sekaligus. Traceroute mengeksploitasi mekanisme penurunan TTL dengan teknik **Inkrementasi Bertahap (*TTL Incrementing*)**:
-1. **Probe Hop 1:** Pengirim mengirim paket probe pertama dengan nilai $	ext{TTL} = 1$. Ketika paket tiba di router pertama (hop 1), router mengurangi TTL menjadi $0$, membuang paket, dan mengirimkan balasan kesalahan. Dari balasan ini, pengirim mengetahui IP router hop 1 dan latensinya.
-2. **Probe Hop 2:** Pengirim mengirim paket probe kedua dengan nilai $	ext{TTL} = 2$. Router 1 mengurangi TTL menjadi $1$ lalu meneruskannya. Saat tiba di Router 2, TTL dikurangi menjadi $0$, paket dibuang, dan Router 2 mengirimkan balasan. Pengirim mencatat IP router hop 2.
-3. **Probe Seterusnya:** Proses diulang dengan menaikkan nilai TTL secara bertahap ($	ext{TTL} = 3, 4, 5, \dots, n$) hingga akhirnya paket mencapai host tujuan.
+1. **Probe Hop 1:** Pengirim mengirim paket probe pertama dengan nilai TTL = 1. Ketika paket tiba di router pertama (hop 1), router mengurangi TTL menjadi 0, membuang paket, dan mengirimkan balasan kesalahan. Dari balasan ini, pengirim mengetahui IP router hop 1 dan latensinya.
+2. **Probe Hop 2:** Pengirim mengirim paket probe kedua dengan nilai TTL = 2. Router 1 mengurangi TTL menjadi 1 lalu meneruskannya. Saat tiba di Router 2, TTL dikurangi menjadi 0, paket dibuang, dan Router 2 mengirimkan balasan. Pengirim mencatat IP router hop 2.
+3. **Probe Seterusnya:** Proses diulang dengan menaikkan nilai TTL secara bertahap (TTL = 3, 4, 5, ..., n) hingga akhirnya paket mencapai host tujuan.
 
 #### 4. Peran ICMP (Internet Control Message Protocol)
 Protokol ICMP memegang peranan sangat vital sebagai media penyampai laporan dan umpan balik (*feedback*) bagi Traceroute:
 1. **Laporan Time Exceeded (ICMP Type 11, Code 0):**  
-   Setiap kali router perantara membuang paket akibat TTL habis ($	ext{TTL} = 0$), router tersebut membangkitkan pesan **ICMP Type 11 Code 0 (Time-to-Live Exceeded in Transit)** dan mengirimkannya kembali ke pengirim probe. Header IP dari paket ICMP ini memuat alamat IP antarmuka router perantara tersebut, sehingga Traceroute dapat mencatat identitas hop tersebut.
+   Setiap kali router perantara membuang paket akibat TTL habis (TTL = 0), router tersebut membangkitkan pesan **ICMP Type 11 Code 0 (Time-to-Live Exceeded in Transit)** dan mengirimkannya kembali ke pengirim probe. Header IP dari paket ICMP ini memuat alamat IP antarmuka router perantara tersebut, sehingga Traceroute dapat mencatat identitas hop tersebut.
 2. **Penanda Akhir di Titik Tujuan (*Target Reached*):**
    - **Pada Windows (`tracert`):** Mengirim paket **ICMP Echo Request (Type 8)**. Saat paket mencapai server tujuan, server tujuan membalas dengan **ICMP Echo Reply (Type 0)**. Penerimaan balasan ini menandakan seluruh rute telah selesai dipetakan.
    - **Pada Linux/macOS (`traceroute`):** Mengirim probe datagram **UDP** ke nomor port tinggi yang tidak lazim (misalnya port 33434 hingga 33534). Ketika paket sampai di host tujuan, sistem tujuan menolak karena tidak ada aplikasi yang mendengarkan di port tersebut, lalu membalas dengan **ICMP Type 3 Code 3 (Destination Unreachable - Port Unreachable)**. Balasan ini memberitahukan utilitas traceroute bahwa tujuan akhir telah berhasil dicapai.
@@ -450,10 +507,10 @@ Misalkan sebuah PC Klien (`192.168.1.50`) menjalankan traceroute ke Web Server (
 
 | Langkah | TTL Probe | Rute Perjalanan Paket | Tindakan di Router / Server | Paket Balasan yang Diterima Klien | Output Layar Traceroute |
 |:-------:|:---------:|:----------------------|:----------------------------|:-----------------------------------|:------------------------|
-| **1** | $	ext{TTL} = 1$ | Klien $	o$ Router 1 | Router 1 mengurangi TTL: $1 - 1 = 0$. Paket dibuang. | Router 1 mengirim **ICMP Type 11 Code 0** | Hop 1: `192.168.1.1` (RTT: 1 ms) |
-| **2** | $	ext{TTL} = 2$ | Klien $	o$ R1 $	o$ Router 2 | R1 meneruskan ($	ext{TTL}=1$). Router 2 menurunkan TTL: $1 - 1 = 0$. Paket dibuang. | Router 2 mengirim **ICMP Type 11 Code 0** | Hop 2: `10.10.1.1` (RTT: 12 ms) |
-| **3** | $	ext{TTL} = 3$ | Klien $	o$ R1 $	o$ R2 $	o$ Router 3 | R1 & R2 meneruskan. Router 3 menurunkan TTL: $1 - 1 = 0$. Paket dibuang. | Router 3 mengirim **ICMP Type 11 Code 0** | Hop 3: `172.16.0.1` (RTT: 25 ms) |
-| **4** | $	ext{TTL} = 4$ | Klien $	o$ R1 $	o$ R2 $	o$ R3 $	o$ Server | Paket tiba di Web Server dengan $	ext{TTL}=1$. Server memproses paket (tujuan tercapai). | Server membalas **ICMP Echo Reply** / **Port Unreachable** | Hop 4: `93.184.216.34` (RTT: 40 ms) *(Selesai)* |
+| **1** | TTL = 1 | Klien -> Router 1 | Router 1 mengurangi TTL: 1 - 1 = 0. Paket dibuang. | Router 1 mengirim **ICMP Type 11 Code 0** | Hop 1: `192.168.1.1` (RTT: 1 ms) |
+| **2** | TTL = 2 | Klien -> R1 -> Router 2 | R1 meneruskan (TTL = 1). Router 2 menurunkan TTL: 1 - 1 = 0. Paket dibuang. | Router 2 mengirim **ICMP Type 11 Code 0** | Hop 2: `10.10.1.1` (RTT: 12 ms) |
+| **3** | TTL = 3 | Klien -> R1 -> R2 -> Router 3 | R1 & R2 meneruskan. Router 3 menurunkan TTL: 1 - 1 = 0. Paket dibuang. | Router 3 mengirim **ICMP Type 11 Code 0** | Hop 3: `172.16.0.1` (RTT: 25 ms) |
+| **4** | TTL = 4 | Klien -> R1 -> R2 -> R3 -> Server | Paket tiba di Web Server dengan TTL = 1. Server memproses paket (tujuan tercapai). | Server membalas **ICMP Echo Reply** / **Port Unreachable** | Hop 4: `93.184.216.34` (RTT: 40 ms) *(Selesai)* |
 
 ---
 
@@ -483,7 +540,7 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 
 #### 1. Prinsip dan Langkah Desain VLSM
 - **Alokasi Jaringan Awal:** `10.252.108.0/24`
-  - Total alamat IP: $2^{(32 - 24)} = 256$ IP (`10.252.108.0` s/d `10.252.108.255`).
+  - Total alamat IP: 2^(32 - 24) = 256 IP (`10.252.108.0` s/d `10.252.108.255`).
 - **Aturan Baku VLSM:** Pengalokasian ruang subnet **wajib diurutkan dari segmen dengan kebutuhan host terbesar ke terkecil** untuk menghindari pemborosan ruang alamat (*address space*) dan mencegah tumpang tindih (*overlap*):
   1. **Laboratorium A:** 90 host
   2. **Laboratorium B:** 60 host
@@ -496,10 +553,10 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 
 ##### Segmen 1: Laboratorium A (Kebutuhan: 90 host)
 - **Titik Awal Alokasi:** `10.252.108.0`
-- **Perhitungan Host Bit ($h$):**
-  $$2^h - 2 \ge 90 \implies h = 7 \quad (2^7 - 2 = 126 	ext{ host usable})$$
-- **Ukuran Blok Alokasi:** $2^7 = 128$ alamat IP.
-- **Prefix Baru:** $/32 - 7 = /25$
+- **Perhitungan Host Bit (h):**
+  2^h - 2 >= 90 -> h = 7 (2^7 - 2 = 126 host usable)
+- **Ukuran Blok Alokasi:** 2^7 = 128 alamat IP.
+- **Prefix Baru:** /32 - 7 = /25
 - **Subnet Mask Baru:** `255.255.255.128`
 - **Alokasi IP:**
   - **IP Network:** `10.252.108.0/25`
@@ -510,10 +567,10 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 
 ##### Segmen 2: Laboratorium B (Kebutuhan: 60 host)
 - **Titik Awal Alokasi:** `10.252.108.128`
-- **Perhitungan Host Bit ($h$):**
-  $$2^h - 2 \ge 60 \implies h = 6 \quad (2^6 - 2 = 62 	ext{ host usable})$$
-- **Ukuran Blok Alokasi:** $2^6 = 64$ alamat IP.
-- **Prefix Baru:** $/32 - 6 = /26$
+- **Perhitungan Host Bit (h):**
+  2^h - 2 >= 60 -> h = 6 (2^6 - 2 = 62 host usable)
+- **Ukuran Blok Alokasi:** 2^6 = 64 alamat IP.
+- **Prefix Baru:** /32 - 6 = /26
 - **Subnet Mask Baru:** `255.255.255.192`
 - **Alokasi IP:**
   - **IP Network:** `10.252.108.128/26`
@@ -524,10 +581,10 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 
 ##### Segmen 3: Administrasi (Kebutuhan: 14 host)
 - **Titik Awal Alokasi:** `10.252.108.192`
-- **Perhitungan Host Bit ($h$):**
-  $$2^h - 2 \ge 14 \implies h = 4 \quad (2^4 - 2 = 14 	ext{ host usable pas})$$
-- **Ukuran Blok Alokasi:** $2^4 = 16$ alamat IP.
-- **Prefix Baru:** $/32 - 4 = /28$
+- **Perhitungan Host Bit (h):**
+  2^h - 2 >= 14 -> h = 4 (2^4 - 2 = 14 host usable pas)
+- **Ukuran Blok Alokasi:** 2^4 = 16 alamat IP.
+- **Prefix Baru:** /32 - 4 = /28
 - **Subnet Mask Baru:** `255.255.255.240`
 - **Alokasi IP:**
   - **IP Network:** `10.252.108.192/28`
@@ -538,12 +595,12 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 
 ##### Segmen 4: Tautan Point-to-Point (Kebutuhan: 4 endpoint)
 - **Titik Awal Alokasi:** `10.252.108.208`
-- **Perhitungan Host Bit ($h$):**
+- **Perhitungan Host Bit (h):**
   Untuk menyediakan 4 endpoint (usable host) dalam satu subnet:
-  $$2^h - 2 \ge 4 \implies h = 3 \quad (2^3 - 2 = 6 	ext{ host usable})$$
-  *(Catatan: Blok /30 hanya menyediakan $2^2 - 2 = 2$ host usable, sehingga untuk 4 host usable dalam satu subnet diperlukan blok /29).*
-- **Ukuran Blok Alokasi:** $2^3 = 8$ alamat IP.
-- **Prefix Baru:** $/32 - 3 = /29$
+  2^h - 2 >= 4 -> h = 3 (2^3 - 2 = 6 host usable)
+  *(Catatan: Blok /30 hanya menyediakan 2^2 - 2 = 2 host usable, sehingga untuk 4 host usable dalam satu subnet diperlukan blok /29).*
+- **Ukuran Blok Alokasi:** 2^3 = 8 alamat IP.
+- **Prefix Baru:** /32 - 3 = /29
 - **Subnet Mask Baru:** `255.255.255.248`
 - **Alokasi IP:**
   - **IP Network:** `10.252.108.208/29`
@@ -562,7 +619,3 @@ Sebuah kampus memiliki alokasi jaringan **10.252.108.0/24** yang akan dibagi unt
 | **Laboratorium B** | 60 | `10.252.108.128/26` | `255.255.255.192` (`/26`) | `10.252.108.129` | `10.252.108.190` | `10.252.108.191` | 62 host |
 | **Administrasi** | 14 | `10.252.108.192/28` | `255.255.255.240` (`/28`) | `10.252.108.193` | `10.252.108.206` | `10.252.108.207` | 14 host |
 | **Tautan Point-to-Point** | 4 | `10.252.108.208/29` | `255.255.255.248` (`/29`) | `10.252.108.209` | `10.252.108.214` | `10.252.108.215` | 6 host |
-
----
-
----
