@@ -1,5 +1,7 @@
 # Kumpulan Tugas Konsep Jaringan
 
+Daffa Rahman Budi Santoso
+NRP 3125600046
 
 ## Tugas Bab 1
 
