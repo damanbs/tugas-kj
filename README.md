@@ -325,6 +325,8 @@ plt.show()
 
 </details>
 
+![Hasil Eksekusi Kode](run.png)
+
 ---
 
 
